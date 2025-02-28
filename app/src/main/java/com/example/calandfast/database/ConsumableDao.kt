@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConsumableDao {
+    //Consumable
+
     @Upsert
     suspend fun upsertConsumable(consumable: Consumable)
 
@@ -19,7 +21,7 @@ interface ConsumableDao {
     @Delete
     suspend fun deleteConsumable(consumable: Consumable)
 
-    @Query("SELECT * from consumable WHERE id = :id")
+    @Query("SELECT * from consumable WHERE consumableId = :id")
     fun getItem(id: Int): Flow<Consumable>
 
     @Query("SELECT * from consumable ORDER BY name ASC")
@@ -30,4 +32,24 @@ interface ConsumableDao {
 
     @Query("SELECT * from consumable ORDER BY calories ASC")
     fun getAllItemsByCalories(): Flow<List<Consumable>>
+
+    //TODAY
+
+    @Upsert
+    suspend fun upsertToday(today: Today)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateToday(today: Today)
+
+    @Delete
+    suspend fun deleteToday(today: Today)
+
+    @Query("SELECT * FROM today WHERE date = :id")
+    fun getTodayByID(id: Long): Flow<Today>
+
+    @Query("SELECT * FROM today WHERE currentWeek = :currentWeek ORDER BY date DESC")
+    fun  getCurrentWeek(currentWeek: Int): Flow<List<Today>>
+
+    @Query("SELECT * from today ORDER BY date DESC")
+    fun getAllToday(): Flow<List<Today>>
 }

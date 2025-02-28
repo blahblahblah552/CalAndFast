@@ -4,11 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [Consumable::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Consumable::class,Today::class],
+    version = 2,
+    exportSchema = false)
+@TypeConverters(Converters::class )
 abstract class ConsumableDatabase : RoomDatabase() {
 
     abstract fun consumableDao(): ConsumableDao

@@ -120,7 +120,7 @@ private fun HomeBody(
         } else {
             InventoryList(
                 itemList = itemList,
-                onItemClick = { onItemClick(it.id) },
+                onItemClick = { onItemClick(it.consumableId) },
                 contentPadding = contentPadding,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
             )
@@ -139,11 +139,13 @@ private fun InventoryList(
         modifier = modifier,
         contentPadding = contentPadding
     ) {
-        items(items = itemList, key = { it.id }) { item ->
+        var totalCal = 0
+        items(items = itemList, key = { it.consumableId }) { item ->
             InventoryItem(item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
                     .clickable { onItemClick(item) })
+            totalCal += item.calories
         }
     }
 }

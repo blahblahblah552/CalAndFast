@@ -77,7 +77,7 @@ fun ConsumableDetailsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToEditItem(uiState.value.itemDetails.id) },
+                onClick = { navigateToEditItem(uiState.value.itemDetails.consumableId) },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(

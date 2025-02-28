@@ -3,15 +3,9 @@ package com.example.calandfast.ui.consumable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.calandfast.database.Consumable
 import com.example.calandfast.database.ConsumablesRepository
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class ConsumableEntryViewModel(
     private val consumablesRepository: ConsumablesRepository
@@ -42,15 +36,15 @@ data class ConsumableUiState(
 )
 
 data class ConsumableDetails(
-    val id: Int = 0,
+    val consumableId: Int = 0,
     val name: String = "",
     val calories: String = "",
     val lastUsed: String = ""
 )
 fun ConsumableDetails.toConsumable(): Consumable = Consumable(
-    id = id,
+    consumableId = consumableId,
     name = name,
-    calories = calories.toInt() ?: 0,
+    calories = calories.toIntOrNull() ?: 0,
     lastUsed = lastUsed
 )
 fun Consumable.toConsumableUiState(isEntryValid: Boolean = false): ConsumableUiState = ConsumableUiState(
@@ -59,7 +53,7 @@ fun Consumable.toConsumableUiState(isEntryValid: Boolean = false): ConsumableUiS
 )
 
 fun Consumable.toConsumableDetails(): ConsumableDetails = ConsumableDetails(
-    id = id,
+    consumableId = consumableId,
     name = name,
     calories = calories.toString(),
     lastUsed = lastUsed
