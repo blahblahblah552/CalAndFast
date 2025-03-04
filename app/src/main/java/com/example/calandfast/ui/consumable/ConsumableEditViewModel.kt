@@ -52,7 +52,7 @@ class ConsumableEditViewModel(savedStateHandle: SavedStateHandle,
 
     private fun validateInput(uiState: ConsumableDetails = consumableUiState.consumableDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && calories.isNotBlank() && lastUsed.isNotBlank()
+            name.isNotBlank() && calories.isNotBlank() && lastUsed > 0
         }
     }
 }

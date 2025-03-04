@@ -42,6 +42,7 @@ import com.example.calandfast.InventoryTopAppBar
 import com.example.calandfast.R
 import com.example.calandfast.database.Consumable
 import com.example.calandfast.ui.AppViewModelProvider
+import com.example.calandfast.ui.consumable.convertMillisToDate
 import com.example.calandfast.ui.navigation.NavigationDestination
 import com.example.calandfast.ui.theme.CalAndFastTheme
 
@@ -175,7 +176,7 @@ private fun InventoryItem(
                 )
             }
             Text(
-                text = item.lastUsed,
+                text = convertMillisToDate(item.lastUsed),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -187,7 +188,7 @@ private fun InventoryItem(
 fun HomeBodyPreview() {
     CalAndFastTheme{
         HomeBody(listOf(
-            Consumable(1, "Game", 100, "2020"), Consumable(2, "Pen", 200, "5050"), Consumable(3, "TV", 300, "5050")
+            Consumable(1, "Game", 100, 7002020), Consumable(2, "Pen", 200, 5050), Consumable(3, "TV", 300, 5050)
         ), onItemClick = {})
     }
 }
@@ -205,7 +206,7 @@ fun HomeBodyEmptyListPreview() {
 fun InventoryItemPreview() {
     CalAndFastTheme {
         InventoryItem(
-            Consumable(1, "Game", 100, "20"),
+            Consumable(1, "Game", 100, 20),
         )
     }
 }

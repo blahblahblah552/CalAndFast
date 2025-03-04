@@ -199,7 +199,7 @@ fun ItemDetails(
             )
             ItemDetailsRow(
                 labelResID = R.string.price,
-                itemDetail = item.lastUsed,
+                itemDetail = convertMillisToDate(item.lastUsed),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(
                         id = R.dimen
@@ -248,7 +248,7 @@ private fun DeleteConfirmationDialog(
 fun ItemDetailsScreenPreview() {
     CalAndFastTheme {
         ItemDetailsBody(ItemDetailsUiState(
-            outOfStock = true, itemDetails = ConsumableDetails(1, "Pen", "100", "10")
+            outOfStock = true, itemDetails = ConsumableDetails(1, "Pen", "100", 7000000000)
         ), onSellItem = {}, onDelete = {})
     }
 }

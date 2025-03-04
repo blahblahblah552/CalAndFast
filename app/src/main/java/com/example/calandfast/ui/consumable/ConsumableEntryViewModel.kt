@@ -25,7 +25,7 @@ class ConsumableEntryViewModel(
 
     private fun validateInput(uiState: ConsumableDetails = consumableUiState.consumableDetails): Boolean {
         return with(uiState){
-            name.isNotBlank() && calories.isNotBlank() && lastUsed.isNotBlank()
+            name.isNotBlank() && calories.isNotBlank() && lastUsed>0
         }
     }
 }
@@ -39,7 +39,7 @@ data class ConsumableDetails(
     val consumableId: Int = 0,
     val name: String = "",
     val calories: String = "",
-    val lastUsed: String = ""
+    val lastUsed: Long = 0
 )
 fun ConsumableDetails.toConsumable(): Consumable = Consumable(
     consumableId = consumableId,

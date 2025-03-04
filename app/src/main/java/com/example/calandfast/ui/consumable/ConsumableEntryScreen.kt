@@ -1,5 +1,7 @@
 package com.example.calandfast.ui.consumable
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -28,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,9 +51,12 @@ import com.example.calandfast.ui.navigation.NavigationDestination
 import com.example.calandfast.ui.theme.CalAndFastTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.Date
 import java.util.Locale
+
 
 object ConsumableEntryDestination : NavigationDestination {
     override val route = "consumable_entry"
@@ -134,6 +140,8 @@ fun ItemInputForm(
     onValueChange: (ConsumableDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
+    var selectedDate by remember { mutableLongStateOf(0) }
+    var showModal by remember { mutableStateOf(false) }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -166,31 +174,30 @@ fun ItemInputForm(
             enabled = enabled,
             singleLine = true
         )
-        OutlinedTextField(
-            value = itemDetails.lastUsed,
-            onValueChange = { onValueChange(itemDetails.copy(lastUsed = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.quantity_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        var selectedDate by remember { mutableStateOf<Long?>(null) }
-        var showModal by remember { mutableStateOf(false) }
+//        OutlinedTextField(
+//            value = itemDetails.lastUsed,
+//            onValueChange = { onValueChange(itemDetails.copy(lastUsed = selectedDate?.let { convertMillisToDate(it) } ?: "")) },
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//            label = { Text(stringResource(R.string.quantity_req)) },
+//            colors = OutlinedTextFieldDefaults.colors(
+//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//            ),
+//            modifier = Modifier.fillMaxWidth(),
+//            enabled = enabled,
+//            singleLine = true
+//        )
 
         OutlinedTextField(
-            value = selectedDate?.let { convertMillisToDate(it) } ?: "",
-            onValueChange = { },
+            value = convertMillisToDate(selectedDate),
+            onValueChange = { onValueChange(itemDetails.copy(lastUsed = selectedDate)) },
             label = { Text("last used") },
             placeholder = { Text("MM/DD/YYYY") },
             trailingIcon = {
                 Icon(Icons.Default.DateRange, contentDescription = "Select date")
             },
+            enabled = enabled,
             modifier = modifier
                 .fillMaxWidth()
                 .pointerInput(selectedDate) {
@@ -205,12 +212,13 @@ fun ItemInputForm(
                         }
                     }
                 }
+
         )
 
         if (showModal) {
             DatePickerModal(
                 onDateSelected = { selectedDate = it },
-                onDismiss = { showModal = false }
+                onDismiss = { showModal = false },
             )
         }
         if (enabled) {
@@ -218,6 +226,7 @@ fun ItemInputForm(
                 text = stringResource(R.string.required_fields),
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
             )
+            onValueChange(itemDetails.copy(lastUsed = selectedDate))
         }
     }
 }
@@ -226,10 +235,11 @@ fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
+    onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
@@ -238,7 +248,7 @@ fun DatePickerModal(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
+                datePickerState.selectedDateMillis?.let { onDateSelected(it) }
                 onDismiss()
             }) {
                 Text("OK")
@@ -260,7 +270,7 @@ private fun ItemEntryScreenPreview() {
     CalAndFastTheme {
         ItemEntryBody(itemUiState = ConsumableUiState(
             ConsumableDetails(
-                name = "Item name", calories = "10", lastUsed = "5"
+                name = "Item name", calories = "10", lastUsed = 0
             )
         ), onItemValueChange = {}, onSaveClick = {})
     }

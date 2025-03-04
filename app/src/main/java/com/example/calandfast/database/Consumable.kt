@@ -14,7 +14,7 @@ data class Consumable(
     val consumableId: Int = 0,
     val name: String,
     val calories: Int,
-    val lastUsed: String
+    val lastUsed: Long
 )
 
 @Entity
