@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 class OfflineConsumablesRepository(private val consumableDao: ConsumableDao) : ConsumablesRepository {
 
-    override fun getAllConsumablesStream(): Flow<List<Consumable>> = consumableDao.getAllItems()
+    override fun getAllConsumablesStream(): Flow<List<Consumable>> = consumableDao.getAllItemsByLastUsed()
 
     override fun getConsumableStream(id: Int): Flow<Consumable?> = consumableDao.getItem(id)
 

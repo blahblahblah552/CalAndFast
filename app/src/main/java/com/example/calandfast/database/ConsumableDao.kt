@@ -27,7 +27,7 @@ interface ConsumableDao {
     @Query("SELECT * from consumable ORDER BY name ASC")
     fun getAllItems(): Flow<List<Consumable>>
 
-    @Query("SELECT * from consumable ORDER BY lastUsed ASC")
+    @Query("SELECT * from consumable ORDER BY lastUsed DESC")
     fun getAllItemsByLastUsed(): Flow<List<Consumable>>
 
     @Query("SELECT * from consumable ORDER BY calories ASC")

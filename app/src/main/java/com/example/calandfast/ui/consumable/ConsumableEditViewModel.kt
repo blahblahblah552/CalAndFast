@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class ConsumableEditViewModel(savedStateHandle: SavedStateHandle,
-                              private val itemsRepository: ConsumablesRepository
+class ConsumableEditViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val itemsRepository: ConsumablesRepository
 ) : ViewModel() {
 
     /**
@@ -52,7 +53,7 @@ class ConsumableEditViewModel(savedStateHandle: SavedStateHandle,
 
     private fun validateInput(uiState: ConsumableDetails = consumableUiState.consumableDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && calories.isNotBlank() && lastUsed > 0
+            name.isNotBlank() && calories.toIntOrNull()!! >=0 && lastUsed > 0
         }
     }
 }

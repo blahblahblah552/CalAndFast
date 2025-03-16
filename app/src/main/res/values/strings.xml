@@ -12,8 +12,8 @@
     <string name="item_name_req">Name*</string>
     <string name="item_price_req">Calories*</string>
     <string name="no">No</string>
-    <string name="price">Calories</string>
-    <string name="quantity_in_stock">last used</string>
+    <string name="price">Last Used</string>
+    <string name="quantity_in_stock">Calories</string>
     <string name="in_stock">%d in stock</string>
     <string name="quantity_req">last used*</string>
     <string name="save_action">Save</string>

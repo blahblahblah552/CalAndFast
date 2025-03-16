@@ -1,7 +1,5 @@
 package com.example.calandfast.ui.consumable
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -51,9 +49,6 @@ import com.example.calandfast.ui.navigation.NavigationDestination
 import com.example.calandfast.ui.theme.CalAndFastTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Currency
 import java.util.Date
 import java.util.Locale
 
@@ -140,7 +135,7 @@ fun ItemInputForm(
     onValueChange: (ConsumableDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
-    var selectedDate by remember { mutableLongStateOf(0) }
+    var selectedDate by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var showModal by remember { mutableStateOf(false) }
     Column(
         modifier = modifier,
@@ -169,25 +164,10 @@ fun ItemInputForm(
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
-//        OutlinedTextField(
-//            value = itemDetails.lastUsed,
-//            onValueChange = { onValueChange(itemDetails.copy(lastUsed = selectedDate?.let { convertMillisToDate(it) } ?: "")) },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//            label = { Text(stringResource(R.string.quantity_req)) },
-//            colors = OutlinedTextFieldDefaults.colors(
-//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//            ),
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
 
         OutlinedTextField(
             value = convertMillisToDate(selectedDate),
@@ -217,7 +197,7 @@ fun ItemInputForm(
 
         if (showModal) {
             DatePickerModal(
-                onDateSelected = { selectedDate = it },
+                onDateSelected = { selectedDate = it +86400000 },
                 onDismiss = { showModal = false },
             )
         }
@@ -270,7 +250,7 @@ private fun ItemEntryScreenPreview() {
     CalAndFastTheme {
         ItemEntryBody(itemUiState = ConsumableUiState(
             ConsumableDetails(
-                name = "Item name", calories = "10", lastUsed = 0
+                name = "Item name", calories = "10", lastUsed = System.currentTimeMillis()
             )
         ), onItemValueChange = {}, onSaveClick = {})
     }

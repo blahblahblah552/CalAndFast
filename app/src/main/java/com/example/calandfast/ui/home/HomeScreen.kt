@@ -100,6 +100,7 @@ fun HomeScreen(
     }
 }
 
+
 @Composable
 private fun HomeBody(
     itemList: List<Consumable>,
@@ -129,6 +130,19 @@ private fun HomeBody(
     }
 }
 
+
+private fun getTotalCal(
+    itemList: List<Consumable>
+): Int{
+    var temp = 0
+    val todayMillis = convertMillisToDate(System.currentTimeMillis())
+    itemList.forEach {
+
+        if (convertMillisToDate(it.lastUsed)==todayMillis)
+        temp += it.calories }
+    return temp
+}
+
 @Composable
 private fun InventoryList(
     itemList: List<Consumable>,
@@ -136,17 +150,20 @@ private fun InventoryList(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    Text(
+        text = "Today's total calories\n"+getTotalCal(itemList).toString(),
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(contentPadding),
+    )
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding
     ) {
-        var totalCal = 0
         items(items = itemList, key = { it.consumableId }) { item ->
             InventoryItem(item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
                     .clickable { onItemClick(item) })
-            totalCal += item.calories
         }
     }
 }

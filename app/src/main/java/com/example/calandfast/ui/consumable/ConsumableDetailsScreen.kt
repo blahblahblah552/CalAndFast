@@ -130,7 +130,8 @@ private fun ItemDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
         ItemDetails(
-            item = itemDetailsUiState.itemDetails.toConsumable(), modifier = Modifier.fillMaxWidth()
+            item = itemDetailsUiState.itemDetails.toConsumable(),
+            modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = onSellItem,
