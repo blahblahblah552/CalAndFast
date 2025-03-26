@@ -96,6 +96,12 @@ fun ConsumableDetailsScreen(
         ItemDetailsBody(
             itemDetailsUiState = uiState.value,
             onSellItem = { viewModel.reduceQuantityByOne() },
+            onCopyItem = {
+                coroutineScope.launch {
+                    viewModel.copyItem()
+                    navigateBack()
+                }
+            },
             onDelete = {
                 // Note: If the user rotates the screen very fast, the operation may get cancelled
                 // and the item may not be deleted from the Database. This is because when config
@@ -121,6 +127,7 @@ fun ConsumableDetailsScreen(
 private fun ItemDetailsBody(
     itemDetailsUiState: ItemDetailsUiState,
     onSellItem: () -> Unit,
+    onCopyItem: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -140,6 +147,14 @@ private fun ItemDetailsBody(
             enabled = !itemDetailsUiState.outOfStock
         ) {
             Text(stringResource(R.string.sell))
+        }
+        Button(
+            onClick = onCopyItem,
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.small,
+            enabled = !itemDetailsUiState.outOfStock
+        ) {
+            Text(stringResource(R.string.copy))
         }
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
@@ -250,6 +265,6 @@ fun ItemDetailsScreenPreview() {
     CalAndFastTheme {
         ItemDetailsBody(ItemDetailsUiState(
             outOfStock = true, itemDetails = ConsumableDetails(1, "Pen", "100", 7000000000)
-        ), onSellItem = {}, onDelete = {})
+        ), onSellItem = {}, onCopyItem = {}, onDelete = {})
     }
 }

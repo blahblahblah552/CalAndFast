@@ -3,6 +3,7 @@ package com.example.calandfast.ui.consumable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.calandfast.database.Consumable
 import com.example.calandfast.database.ConsumablesRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +43,17 @@ class ConsumableDetailsViewModel (
             if (currentItem.calories > 0) {
                 itemsRepository.upsertConsumable(currentItem.copy(calories = currentItem.calories - 1))
             }
+        }
+    }
+
+    fun copyItem(){
+        viewModelScope.launch {
+            val currentItem = uiState.value.itemDetails.toConsumable()
+            itemsRepository.insertConsumable(Consumable(
+                name = currentItem.name,
+                calories = currentItem.calories,
+                lastUsed = System.currentTimeMillis()
+            ))
         }
     }
 

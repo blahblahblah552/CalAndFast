@@ -192,7 +192,6 @@ fun ItemInputForm(
                         }
                     }
                 }
-
         )
 
         if (showModal) {

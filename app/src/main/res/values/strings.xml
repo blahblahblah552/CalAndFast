@@ -18,6 +18,7 @@
     <string name="quantity_req">last used*</string>
     <string name="save_action">Save</string>
     <string name="sell">Sell</string>
+    <string name="copy">Copy</string>
     <string name="yes">Yes</string>
     <string name="required_fields">*required fields</string>
 </resources>
