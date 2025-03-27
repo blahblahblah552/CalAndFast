@@ -11,12 +11,19 @@ import com.example.calandfast.ui.consumable.ConsumableDetailsViewModel
 import com.example.calandfast.ui.consumable.ConsumableEditViewModel
 import com.example.calandfast.ui.consumable.ConsumableEntryViewModel
 import com.example.calandfast.ui.home.HomeViewModel
+import com.example.calandfast.ui.weeklyTotals.WeeklyViewModel
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        initializer {
+            WeeklyViewModel(
+                this.createSavedStateHandle(),
+                consumableApplication().container.consumablesRepository
+            )
+        }
         // Initializer for ItemEditViewModel
         initializer {
             ConsumableEditViewModel(

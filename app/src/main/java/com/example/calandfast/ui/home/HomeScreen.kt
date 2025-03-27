@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +60,7 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     navigateToItemEntry: () -> Unit,
     navigateToItemUpdate: (Int) -> Unit,
+    navigateToWeekly:() -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -87,6 +89,20 @@ fun HomeScreen(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.item_entry_title)
+                )
+            }
+            FloatingActionButton(
+                onClick = navigateToWeekly,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(
+                        bottom = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateEndPadding(LocalLayoutDirection.current)
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(R.string.see_week_calories)
                 )
             }
         },
@@ -137,7 +153,6 @@ private fun getTotalCal(
     var temp = 0
     val todayMillis = convertMillisToDate(System.currentTimeMillis())
     itemList.forEach {
-
         if (convertMillisToDate(it.lastUsed)==todayMillis)
         temp += it.calories }
     return temp
@@ -150,10 +165,15 @@ private fun InventoryList(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    val ttCal = getTotalCal(itemList)
     Text(
-        text = "Today's total calories\n"+getTotalCal(itemList).toString(),
+        text = "Today's total calories\n$ttCal",
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(contentPadding),
+    )
+    Text(
+        text = "Remaining calories\n${2000-ttCal}",
+        textAlign = TextAlign.Center,
     )
     LazyColumn(
         modifier = modifier,
@@ -186,7 +206,7 @@ private fun InventoryItem(
                     text = item.name,
                     style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.weight(1f,true))
                 Text(
                     text = item.calories.toString(),
                     style = MaterialTheme.typography.titleMedium

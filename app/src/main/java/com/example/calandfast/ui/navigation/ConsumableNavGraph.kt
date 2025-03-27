@@ -15,6 +15,8 @@ import com.example.calandfast.ui.consumable.ConsumableEditDestination
 import com.example.calandfast.ui.consumable.ConsumableEditScreen
 import com.example.calandfast.ui.consumable.ConsumableEntryDestination
 import com.example.calandfast.ui.consumable.ConsumableEntryScreen
+import com.example.calandfast.ui.weeklyTotals.WeeklyCalories
+import com.example.calandfast.ui.weeklyTotals.WeeklyScreen
 
 /**
  * Provides Navigation graph for the application.
@@ -34,7 +36,8 @@ fun ConsumableNavHost(
                 navigateToItemEntry = { navController.navigate(ConsumableEntryDestination.route) },
                 navigateToItemUpdate = {
                     navController.navigate("${ConsumableDetailsDestination.route}/${it}")
-                }
+                },
+                navigateToWeekly = {navController.navigate(WeeklyCalories.route)}
             )
         }
         composable(route = ConsumableEntryDestination.route) {
@@ -54,6 +57,14 @@ fun ConsumableNavHost(
                 navigateBack = { navController.navigateUp() }
             )
         }
+        composable(
+            route = WeeklyCalories.route
+        ) {
+            WeeklyScreen(
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+
         composable(
             route = ConsumableEditDestination.routeWithArgs,
             arguments = listOf(navArgument(ConsumableEditDestination.itemIdArg) {
