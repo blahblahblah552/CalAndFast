@@ -8,6 +8,8 @@ interface ConsumablesRepository {
 
     fun getConsumableStream(id: Int): Flow<Consumable?>
 
+    fun getCurrentWeekConsumable(currentWeek: Long): Flow<List<Consumable>>
+
     suspend fun insertConsumable(consumable: Consumable)
 
     suspend fun deleteConsumable(consumable: Consumable)
@@ -15,6 +17,8 @@ interface ConsumablesRepository {
     suspend fun updateConsumable(consumable: Consumable)
     
     suspend fun upsertConsumable(consumable: Consumable)
+
+
     //Today
     suspend fun insertToday(today: Today)
 

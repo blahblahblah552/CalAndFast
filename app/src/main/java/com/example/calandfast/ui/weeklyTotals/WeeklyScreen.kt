@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
@@ -21,10 +21,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calandfast.InventoryTopAppBar
 import com.example.calandfast.R
 import com.example.calandfast.ui.AppViewModelProvider
-import com.example.calandfast.ui.consumable.ConsumableDetailsDestination
 import com.example.calandfast.ui.navigation.NavigationDestination
 
-object WeeklyCalories : NavigationDestination {
+object WeeklyCaloriesDestination : NavigationDestination {
     override val route = "weekly_calories"
     override val titleRes = R.string.week_title
 }
@@ -40,7 +39,7 @@ fun WeeklyScreen(
     Scaffold(
         topBar = {
             InventoryTopAppBar(
-                title = stringResource(ConsumableDetailsDestination.titleRes),
+                title = stringResource(WeeklyCaloriesDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
@@ -50,7 +49,7 @@ fun WeeklyScreen(
     ) { innerPadding ->
         WeeklyCalorieBody(
             uiState.value,
-            weeklyCal = {viewModel.thisWeek()},
+            weeklyCal = {viewModel.initThisWeek()},
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -72,8 +71,12 @@ private fun WeeklyCalorieBody(
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
+        Button(
+            onClick = weeklyCal
+        ) { }
         Text(
-            text="MONDAY"
+
+            text= "Tuesday $weeklyCal"
         )
     }
 }

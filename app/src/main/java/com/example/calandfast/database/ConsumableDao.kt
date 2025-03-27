@@ -33,6 +33,9 @@ interface ConsumableDao {
     @Query("SELECT * from consumable ORDER BY calories ASC")
     fun getAllItemsByCalories(): Flow<List<Consumable>>
 
+    @Query("SELECT * from consumable WHERE lastUsed >= :currentWeek ORDER BY lastUsed ASC")
+    fun getCurrentWeekConsumable(currentWeek: Long): Flow<List<Consumable>>
+
     //TODAY
 
     @Upsert
