@@ -1,11 +1,9 @@
 package com.example.calandfast.ui.weeklyTotals
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calandfast.database.Consumable
 import com.example.calandfast.database.ConsumablesRepository
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -15,15 +13,13 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-var WEEK = 604800000
+var WEEK = 604800000L
 
 class WeeklyViewModel (
-    savedStateHandle: SavedStateHandle,
-    private val itemsRepository: ConsumablesRepository,
+    itemsRepository: ConsumablesRepository,
 ) : ViewModel() {
     private val weekdayMap = mutableMapOf<DayOfWeek, Int>()
-    private var _tuesday = MutableStateFlow(0)
-    val myMutableState: MutableStateFlow<Int> = _tuesday
+
     val uiState: StateFlow<WeeklyUiState> =
         itemsRepository.getCurrentWeekConsumable(System.currentTimeMillis() - WEEK)
             .map { WeeklyUiState(it) }
@@ -37,9 +33,7 @@ class WeeklyViewModel (
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
-
-
-    fun initThisWeek() {
+    fun initThisWeek(): Map<DayOfWeek,Int>{
 
         var dayOfWeekCal = 0
         val items = uiState.value.itemList
@@ -51,7 +45,7 @@ class WeeklyViewModel (
             dayOfWeekCal += item.calories
             weekdayMap[dayOfWeekFromMillis(item.lastUsed)] = dayOfWeekCal
         }
-        _tuesday.value = weekdayMap.getOrDefault(DayOfWeek.TUESDAY, 0)
+        return weekdayMap
     }
 }
 

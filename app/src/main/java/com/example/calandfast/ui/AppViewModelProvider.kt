@@ -20,7 +20,6 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             WeeklyViewModel(
-                this.createSavedStateHandle(),
                 consumableApplication().container.consumablesRepository
             )
         }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,6 +21,7 @@ import com.example.calandfast.InventoryTopAppBar
 import com.example.calandfast.R
 import com.example.calandfast.ui.AppViewModelProvider
 import com.example.calandfast.ui.navigation.NavigationDestination
+import java.time.DayOfWeek
 
 object WeeklyCaloriesDestination : NavigationDestination {
     override val route = "weekly_calories"
@@ -36,6 +36,7 @@ fun WeeklyScreen(
     viewModel: WeeklyViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val currentWeekCal = viewModel.initThisWeek()
     Scaffold(
         topBar = {
             InventoryTopAppBar(
@@ -48,8 +49,7 @@ fun WeeklyScreen(
         modifier = modifier,
     ) { innerPadding ->
         WeeklyCalorieBody(
-            uiState.value,
-            weeklyCal = {viewModel.initThisWeek()},
+            currentWeekCal,
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -63,20 +63,28 @@ fun WeeklyScreen(
 
 @Composable
 private fun WeeklyCalorieBody(
-    uiState: WeeklyUiState,
-    weeklyCal: () -> Unit,
+    currentWeekCal: Map<DayOfWeek,Int>,
     modifier: Modifier = Modifier
 ){
+
     Column(
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
-        Button(
-            onClick = weeklyCal
-        ) { }
         Text(
-
-            text= "Tuesday $weeklyCal"
+            text= "Monday ${currentWeekCal.getOrDefault(DayOfWeek.MONDAY,0)}"
+        )
+        Text(
+            text= "Tuesday ${currentWeekCal.getOrDefault(DayOfWeek.TUESDAY,0)}"
+        )
+        Text(
+            text= "Wednesday ${currentWeekCal.getOrDefault(DayOfWeek.WEDNESDAY,0)}"
+        )
+        Text(
+            text= "Thursday ${currentWeekCal.getOrDefault(DayOfWeek.THURSDAY,0)}"
+        )
+        Text(
+            text= "Friday ${currentWeekCal.getOrDefault(DayOfWeek.FRIDAY,0)}"
         )
     }
 }

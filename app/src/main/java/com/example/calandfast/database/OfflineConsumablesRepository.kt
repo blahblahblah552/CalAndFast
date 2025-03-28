@@ -8,7 +8,7 @@ class OfflineConsumablesRepository(private val consumableDao: ConsumableDao) : C
 
     override fun getConsumableStream(id: Int): Flow<Consumable?> = consumableDao.getItem(id)
 
-    override fun getCurrentWeekConsumable(currentWeek: Long) = consumableDao.getCurrentWeekConsumable(currentWeek)
+    override fun getCurrentWeekConsumable(currentWeek: Long): Flow<List<Consumable>> = consumableDao.getCurrentWeekConsumable(currentWeek)
 
     override suspend fun insertConsumable(consumable: Consumable) = consumableDao.upsertConsumable(consumable)
 
