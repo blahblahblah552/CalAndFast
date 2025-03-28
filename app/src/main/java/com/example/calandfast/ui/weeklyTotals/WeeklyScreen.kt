@@ -36,7 +36,7 @@ fun WeeklyScreen(
     viewModel: WeeklyViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState()
-    val currentWeekCal = viewModel.initThisWeek()
+    val currentWeekCal = viewModel.initThisWeek(uiState.value.itemList)
     Scaffold(
         topBar = {
             InventoryTopAppBar(

@@ -33,10 +33,9 @@ class WeeklyViewModel (
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
-    fun initThisWeek(): Map<DayOfWeek,Int>{
+    fun initThisWeek(items: List<Consumable>): Map<DayOfWeek,Int>{
 
         var dayOfWeekCal = 0
-        val items = uiState.value.itemList
 
         items.forEach { item ->
             if (!weekdayMap.containsKey(dayOfWeekFromMillis(item.lastUsed))) {
@@ -56,4 +55,5 @@ private fun dayOfWeekFromMillis(millis: Long, zoneId: ZoneId = ZoneId.systemDefa
 }
 
 
-data class WeeklyUiState(val itemList: List<Consumable> = listOf())
+data class WeeklyUiState(
+    val itemList: List<Consumable> = listOf())
