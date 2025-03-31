@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -93,32 +94,32 @@ private fun WeeklyCalorieBody(
     Row(
         modifier = modifier
             .padding(5.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
+        horizontalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         Text(
-            text= "Mon\n${currentWeekCal.getOrDefault(DayOfWeek.MONDAY,0)}"
+            text= "Mon\n${currentWeekCal[DayOfWeek.MONDAY]}"
         )
         Text(
-            text= "Tue\n${currentWeekCal.getOrDefault(DayOfWeek.TUESDAY,0)}"
+            text= "Tue\n${currentWeekCal[DayOfWeek.TUESDAY]}"
         )
         Text(
-            text= "Wed\n${currentWeekCal.getOrDefault(DayOfWeek.WEDNESDAY,0)}"
+            text= "Wed\n${currentWeekCal[DayOfWeek.WEDNESDAY]}"
         )
         Text(
-            text= "Thur\n${currentWeekCal.getOrDefault(DayOfWeek.THURSDAY,0)}"
+            text= "Thu\n${currentWeekCal[DayOfWeek.THURSDAY]}"
         )
         Text(
-            text= "Fri\n${currentWeekCal.getOrDefault(DayOfWeek.FRIDAY,0)}"
+            text= "Fri\n${currentWeekCal[DayOfWeek.FRIDAY]}"
         )
         Text(
-            text= "Sat\n${currentWeekCal.getOrDefault(DayOfWeek.SATURDAY,0)}"
+            text= "Sat\n${currentWeekCal[DayOfWeek.SATURDAY]}"
         )
         Text(
-            text= "Sun\n${currentWeekCal.getOrDefault(DayOfWeek.SUNDAY,0)}"
+            text= "Sun\n${currentWeekCal[DayOfWeek.SUNDAY]}"
         )
     }
 }
-private val defaultMaxHeight = 200.dp
+private val defaultMaxHeight = 500.dp
 
 @Composable
 internal fun BarChart(
@@ -159,22 +160,30 @@ internal fun BarChart(
         values.forEach { item ->
             Bar(
                 value = item/100,
-                color = MaterialTheme.colorScheme.primary,
+                color = getDynamicColor(item/2000),
                 maxHeight = values.max().dp
             )
         }
     }
 }
+fun getDynamicColor(progress: Float): Color {
+    if (progress <= 0f) return Color.Blue
+    if (progress >= 1f) return Color.Red
+
+    val hueStart = 240.0f // Blue
+    val hueEnd = 0.0f     // Red
+    val hue = hueStart + (hueEnd - hueStart) * progress
+
+    return Color.hsv(hue, 1f, 1f)
+}
 
 @Composable
 private fun RowScope.Bar(
     value: Float,
-    color: androidx.compose.ui.graphics.Color,
+    color: Color,
     maxHeight: Dp
 ) {
-
     val itemHeight = remember(value) { value * maxHeight.value / 100 }
-
     Spacer(
         modifier = Modifier
             .padding(horizontal = 5.dp)

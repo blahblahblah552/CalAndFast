@@ -63,7 +63,7 @@ class ConsumableDetailsViewModel (
             itemsRepository.insertConsumable(Consumable(
                 name = currentItem.name,
                 calories = currentItem.calories,
-                lastUsed = System.currentTimeMillis()
+                lastUsed = currentItem.lastUsed
             ))
         }
     }

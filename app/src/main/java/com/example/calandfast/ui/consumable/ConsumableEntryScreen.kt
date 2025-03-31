@@ -135,7 +135,7 @@ fun ItemInputForm(
     onValueChange: (ConsumableDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
-    var selectedDate by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var selectedDate by remember { mutableLongStateOf(if (itemDetails.lastUsed > 0) itemDetails.lastUsed else System.currentTimeMillis()) }
     var showModal by remember { mutableStateOf(false) }
     Column(
         modifier = modifier,

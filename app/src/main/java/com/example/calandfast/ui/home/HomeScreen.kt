@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -235,8 +236,9 @@ fun MinimalDropdownMenu(navigateToWeekly:() -> Unit,) {
                 trailingIcon = {Icon(Icons.Default.DateRange, contentDescription = null)}
             )
             DropdownMenuItem(
-                text = { Text("Option 2") },
-                onClick = { /* Do something... */ }
+                text = { Text("Settings") },
+                onClick = { /* Do something... */ },
+                trailingIcon = { Icon(Icons.Default.Settings, contentDescription = "Settings") }
             )
         }
     }
