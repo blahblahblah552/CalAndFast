@@ -26,7 +26,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -64,22 +63,21 @@ fun WeeklyScreen(
     ) { innerPadding ->
         Column {
             Row {
+                val weekList = viewModel.mapToList(currentWeekCal)
+                BarChart(
+                    modifier,
+                    weekList
+                )
+            }
+            Row {
                 WeeklyCalorieBody(
                     currentWeekCal,
                     modifier = Modifier
                         .padding(
                             start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
-                            top = innerPadding.calculateTopPadding(),
                             end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
                         )
                         .verticalScroll(rememberScrollState())
-                )
-            }
-            Row {
-                val weekList = viewModel.mapToList(currentWeekCal)
-                BarChart(
-                    modifier,
-                    weekList
                 )
             }
         }
@@ -92,30 +90,31 @@ private fun WeeklyCalorieBody(
     modifier: Modifier = Modifier
 ){
 
-    Column(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+    Row(
+        modifier = modifier
+            .padding(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
-            text= "Monday ${currentWeekCal.getOrDefault(DayOfWeek.MONDAY,0)}"
+            text= "Mon\n${currentWeekCal.getOrDefault(DayOfWeek.MONDAY,0)}"
         )
         Text(
-            text= "Tuesday ${currentWeekCal.getOrDefault(DayOfWeek.TUESDAY,0)}"
+            text= "Tue\n${currentWeekCal.getOrDefault(DayOfWeek.TUESDAY,0)}"
         )
         Text(
-            text= "Wednesday ${currentWeekCal.getOrDefault(DayOfWeek.WEDNESDAY,0)}"
+            text= "Wed\n${currentWeekCal.getOrDefault(DayOfWeek.WEDNESDAY,0)}"
         )
         Text(
-            text= "Thursday ${currentWeekCal.getOrDefault(DayOfWeek.THURSDAY,0)}"
+            text= "Thur\n${currentWeekCal.getOrDefault(DayOfWeek.THURSDAY,0)}"
         )
         Text(
-            text= "Friday ${currentWeekCal.getOrDefault(DayOfWeek.FRIDAY,0)}"
+            text= "Fri\n${currentWeekCal.getOrDefault(DayOfWeek.FRIDAY,0)}"
         )
         Text(
-            text= "Saturday ${currentWeekCal.getOrDefault(DayOfWeek.SATURDAY,0)}"
+            text= "Sat\n${currentWeekCal.getOrDefault(DayOfWeek.SATURDAY,0)}"
         )
         Text(
-            text= "Sunday ${currentWeekCal.getOrDefault(DayOfWeek.SUNDAY,0)}"
+            text= "Sun\n${currentWeekCal.getOrDefault(DayOfWeek.SUNDAY,0)}"
         )
     }
 }

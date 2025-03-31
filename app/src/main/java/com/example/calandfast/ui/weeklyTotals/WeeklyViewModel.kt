@@ -1,5 +1,6 @@
 package com.example.calandfast.ui.weeklyTotals
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calandfast.database.Consumable
@@ -12,10 +13,9 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.temporal.TemporalAdjusters
+import java.util.Calendar
 
-var ZONE_OFFSET = 6176000L
+var ZONE_OFFSET = 14927011L
 
 class WeeklyViewModel (
     itemsRepository: ConsumablesRepository,
@@ -26,11 +26,12 @@ class WeeklyViewModel (
         DayOfWeek.WEDNESDAY to 0,
         DayOfWeek.THURSDAY to 0,
         DayOfWeek.FRIDAY to 0,
-        DayOfWeek.SATURDAY to 0
+        DayOfWeek.SATURDAY to 0,
+        DayOfWeek.SUNDAY to 0
         )
 
     val uiState: StateFlow<WeeklyUiState> =
-        itemsRepository.getCurrentWeekConsumable(getThisWeekMondayMillis())
+        itemsRepository.getCurrentWeekConsumable(getStartOfWeek())
             .map { WeeklyUiState(it) }
             .stateIn(
                 scope = viewModelScope,
@@ -38,10 +39,23 @@ class WeeklyViewModel (
                 initialValue = WeeklyUiState()
             )
 
-    private fun getThisWeekMondayMillis(): Long {
-        val now = LocalDateTime.now()
-        val thisMonday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        return thisMonday.toEpochSecond(ZoneOffset.UTC) * 1000L - ZONE_OFFSET
+
+    private fun getStartOfWeek(): Long {
+        val currentTime = System.currentTimeMillis()
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentTime
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+
+        // Subtract days to reach Monday (1), adjust if necessary
+        var daysToSubtract = dayOfWeek - 1
+
+        if (daysToSubtract < 0) {
+            daysToSubtract += 7
+        }
+
+        calendar.add(Calendar.DAY_OF_MONTH, - daysToSubtract)
+        Log.d("WeeklyViewModel", "getStartOfWeek: ${calendar.timeInMillis + ZONE_OFFSET}")
+        return calendar.timeInMillis + ZONE_OFFSET
     }
 
     companion object {
