@@ -12,16 +12,25 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.temporal.TemporalAdjusters
 
-var WEEK = 604800000L
+var ZONE_OFFSET = 6176000L
 
 class WeeklyViewModel (
     itemsRepository: ConsumablesRepository,
 ) : ViewModel() {
-    private val weekdayMap = mutableMapOf<DayOfWeek, Int>()
+    private val weekdayMap = mutableMapOf<DayOfWeek, Int>(
+        DayOfWeek.MONDAY to 0,
+        DayOfWeek.TUESDAY to 0,
+        DayOfWeek.WEDNESDAY to 0,
+        DayOfWeek.THURSDAY to 0,
+        DayOfWeek.FRIDAY to 0,
+        DayOfWeek.SATURDAY to 0
+        )
 
     val uiState: StateFlow<WeeklyUiState> =
-        itemsRepository.getCurrentWeekConsumable(System.currentTimeMillis() - WEEK)
+        itemsRepository.getCurrentWeekConsumable(getThisWeekMondayMillis())
             .map { WeeklyUiState(it) }
             .stateIn(
                 scope = viewModelScope,
@@ -29,24 +38,32 @@ class WeeklyViewModel (
                 initialValue = WeeklyUiState()
             )
 
+    private fun getThisWeekMondayMillis(): Long {
+        val now = LocalDateTime.now()
+        val thisMonday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        return thisMonday.toEpochSecond(ZoneOffset.UTC) * 1000L - ZONE_OFFSET
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
     fun initThisWeek(items: List<Consumable>): Map<DayOfWeek,Int>{
-
-        var dayOfWeekCal = 0
-
         items.forEach { item ->
-            if (!weekdayMap.containsKey(dayOfWeekFromMillis(item.lastUsed))) {
-                dayOfWeekCal = 0
-            }
-            dayOfWeekCal += item.calories
-            weekdayMap[dayOfWeekFromMillis(item.lastUsed)] = dayOfWeekCal
+            weekdayMap[dayOfWeekFromMillis(item.lastUsed)] = weekdayMap[dayOfWeekFromMillis(item.lastUsed)]!! + item.calories
         }
         return weekdayMap
     }
+
+    fun mapToList(tempMap: Map<DayOfWeek,Int>):List<Float>{
+        val tempList: MutableList<Float> = mutableListOf()
+        tempMap.forEach{ (_, value) ->
+            tempList.add(value.toFloat())
+        }
+        return tempList
+    }
 }
+
 
 private fun dayOfWeekFromMillis(millis: Long, zoneId: ZoneId = ZoneId.systemDefault()): DayOfWeek {
     val instant = Instant.ofEpochMilli(millis)

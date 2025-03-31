@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+val DAY = 86400000L
+
 class ConsumableDetailsViewModel (
     savedStateHandle: SavedStateHandle,
     private val itemsRepository: ConsumablesRepository,
@@ -37,11 +39,20 @@ class ConsumableDetailsViewModel (
     /**
      * Reduces the item quantity by one and update the [ConsumablesRepository]'s data source.
      */
-    fun reduceQuantityByOne() {
+    fun minusDay() {
         viewModelScope.launch {
             val currentItem = uiState.value.itemDetails.toConsumable()
             if (currentItem.calories > 0) {
-                itemsRepository.upsertConsumable(currentItem.copy(calories = currentItem.calories - 1))
+                itemsRepository.upsertConsumable(currentItem.copy(lastUsed = currentItem.lastUsed - DAY))
+            }
+        }
+    }
+
+    fun plusDay() {
+        viewModelScope.launch {
+            val currentItem = uiState.value.itemDetails.toConsumable()
+            if (currentItem.calories > 0) {
+                itemsRepository.upsertConsumable(currentItem.copy(lastUsed = currentItem.lastUsed + DAY))
             }
         }
     }
