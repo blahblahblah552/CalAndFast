@@ -90,7 +90,6 @@ private fun WeeklyCalorieBody(
     currentWeekCal: Map<DayOfWeek,Int>,
     modifier: Modifier = Modifier
 ){
-
     Row(
         modifier = modifier
             .padding(5.dp),

@@ -78,7 +78,6 @@ class WeeklyViewModel (
     }
 }
 
-
 private fun dayOfWeekFromMillis(millis: Long, zoneId: ZoneId = ZoneId.systemDefault()): DayOfWeek {
     val instant = Instant.ofEpochMilli(millis)
     val localDateTime = LocalDateTime.ofInstant(instant, zoneId)
