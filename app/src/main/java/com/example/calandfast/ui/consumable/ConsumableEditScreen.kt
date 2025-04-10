@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calandfast.InventoryTopAppBar
 import com.example.calandfast.R
-import com.example.calandfast.database.Consumable
 import com.example.calandfast.ui.AppViewModelProvider
 import com.example.calandfast.ui.navigation.NavigationDestination
 import com.example.calandfast.ui.theme.CalAndFastTheme

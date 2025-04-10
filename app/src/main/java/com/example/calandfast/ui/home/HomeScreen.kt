@@ -75,7 +75,6 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -84,8 +83,10 @@ fun HomeScreen(
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
-            MinimalDropdownMenu(navigateToWeekly)
-        },
+                MinimalDropdownMenu(
+                    navigateToWeekly
+                )
+            },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToItemEntry,
@@ -112,7 +113,6 @@ fun HomeScreen(
     }
 }
 
-
 @Composable
 private fun HomeBody(
     itemList: List<Consumable>,
@@ -120,6 +120,7 @@ private fun HomeBody(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
@@ -159,6 +160,7 @@ private fun InventoryList(
     itemList: List<Consumable>,
     onItemClick: (Consumable) -> Unit,
     contentPadding: PaddingValues,
+
     modifier: Modifier = Modifier
 ) {
     val ttCal = getTotalCal(itemList)
@@ -217,29 +219,34 @@ private fun InventoryItem(
 }
 
 @Composable
-fun MinimalDropdownMenu(navigateToWeekly:() -> Unit,) {
+fun MinimalDropdownMenu(
+    navigateToWeekly:() -> Unit){
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .fillMaxWidth()
+            .padding(36.dp),
+        contentAlignment = Alignment.TopEnd
     ) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.see_week_calories)) },
-                onClick = navigateToWeekly,
-                trailingIcon = {Icon(Icons.Default.DateRange, contentDescription = null)}
-            )
-            DropdownMenuItem(
-                text = { Text("Settings") },
-                onClick = { /* Do something... */ },
-                trailingIcon = { Icon(Icons.Default.Settings, contentDescription = "Settings") }
-            )
+        Column {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.see_week_calories)) },
+                    onClick = navigateToWeekly,
+                    trailingIcon = {Icon(Icons.Default.DateRange, contentDescription = null)}
+                )
+                DropdownMenuItem(
+                    text = { Text("Settings") },
+                    onClick = { /* Do something... */ },
+                    trailingIcon = { Icon(Icons.Default.Settings, contentDescription = "Settings") }
+                )
+            }
         }
     }
 }
@@ -269,6 +276,16 @@ fun InventoryItemPreview() {
     CalAndFastTheme {
         InventoryItem(
             Consumable(1, "Game", 100, 20),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DropdownPreview() {
+    CalAndFastTheme {
+        MinimalDropdownMenu(
+            navigateToWeekly = {}
         )
     }
 }

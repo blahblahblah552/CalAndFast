@@ -1,5 +1,6 @@
 package com.example.calandfast.ui.weeklyTotals
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,6 +38,7 @@ import com.example.calandfast.InventoryTopAppBar
 import com.example.calandfast.R
 import com.example.calandfast.ui.AppViewModelProvider
 import com.example.calandfast.ui.navigation.NavigationDestination
+import com.example.calandfast.ui.theme.CalAndFastTheme
 import java.time.DayOfWeek
 
 object WeeklyCaloriesDestination : NavigationDestination {
@@ -47,10 +51,10 @@ object WeeklyCaloriesDestination : NavigationDestination {
 fun WeeklyScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: WeeklyViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    weeklyViewModel: WeeklyViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-    val currentWeekCal = viewModel.initThisWeek(uiState.value.itemList)
+    val uiState = weeklyViewModel.uiState.collectAsState()
+    val currentWeekCal = weeklyViewModel.initThisWeek(uiState.value.itemList)
     Scaffold(
         topBar = {
             InventoryTopAppBar(
@@ -62,9 +66,10 @@ fun WeeklyScreen(
 
         modifier = modifier,
     ) { innerPadding ->
-        Column {
+        val weekList = weeklyViewModel.mapToList(currentWeekCal)
+            Column {
             Row {
-                val weekList = viewModel.mapToList(currentWeekCal)
+
                 BarChart(
                     modifier,
                     weekList
@@ -73,6 +78,7 @@ fun WeeklyScreen(
             Row {
                 WeeklyCalorieBody(
                     currentWeekCal,
+                    weekList.sum().toInt(),
                     modifier = Modifier
                         .padding(
                             start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -85,36 +91,30 @@ fun WeeklyScreen(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun WeeklyCalorieBody(
-    currentWeekCal: Map<DayOfWeek,Int>,
+    currentWeekCal: Map<DayOfWeek, Int>,
+    totalWeeklyCalories: Int, // Pass as parameter
     modifier: Modifier = Modifier
 ){
-    Row(
+    Column(
         modifier = modifier
-            .padding(5.dp),
-        horizontalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
+    ){
+        Row {
+            currentWeekCal.forEach { (dayOfWeek, calories) ->
+                Text(
+                    text = "${dayOfWeek.name.take(3)}\n$calories",
+                    modifier = Modifier
+                        .weight(1f),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
         Text(
-            text= "Mon\n${currentWeekCal[DayOfWeek.MONDAY]}"
-        )
-        Text(
-            text= "Tue\n${currentWeekCal[DayOfWeek.TUESDAY]}"
-        )
-        Text(
-            text= "Wed\n${currentWeekCal[DayOfWeek.WEDNESDAY]}"
-        )
-        Text(
-            text= "Thu\n${currentWeekCal[DayOfWeek.THURSDAY]}"
-        )
-        Text(
-            text= "Fri\n${currentWeekCal[DayOfWeek.FRIDAY]}"
-        )
-        Text(
-            text= "Sat\n${currentWeekCal[DayOfWeek.SATURDAY]}"
-        )
-        Text(
-            text= "Sun\n${currentWeekCal[DayOfWeek.SUNDAY]}"
+            text = "Total Calories: $totalWeeklyCalories",
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -190,4 +190,35 @@ private fun RowScope.Bar(
             .weight(1f)
             .background(color)
     )
+}
+
+////////////// previews
+
+
+
+@Preview(showBackground = true)
+@Composable
+fun HomeBodyPreview() {
+    CalAndFastTheme{
+        WeeklyCalorieBody(currentWeekCal = mapOf(DayOfWeek.MONDAY to 100, DayOfWeek.TUESDAY to 200,
+            DayOfWeek.WEDNESDAY to 300, DayOfWeek.THURSDAY to 400, DayOfWeek.FRIDAY to 500,
+            DayOfWeek.SATURDAY to 600, DayOfWeek.SUNDAY to 700),
+            2000,
+            modifier = Modifier)
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun BarChartPreview() {
+    CalAndFastTheme{
+        BarChart(modifier = Modifier, values = listOf(100f,200f,300f,400f,500f,600f,700f))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WeeklyScreenPreview() {
+    CalAndFastTheme{
+        WeeklyScreen(modifier = Modifier, navigateBack = {})
+    }
 }
